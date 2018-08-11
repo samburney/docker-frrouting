@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv bash
+
+# If config file exists, start daemon
+if [ -f /etc/frr/ospf6d.conf ] ; then
+    echo "Starting FRRouting (ospf6d)"
+
+    exec \
+        /usr/lib/frr/ospf6d
+else
+    # Otherwise sleep for a while...
+    sleep 60
+fi

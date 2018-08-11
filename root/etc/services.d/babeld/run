@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv bash
+
+# If config file exists, start daemon
+if [ -f /etc/frr/babeld.conf ] ; then
+    echo "Starting FRRouting (babeld)"
+
+    exec \
+        /usr/lib/frr/babeld
+else
+    # Otherwise sleep for a while...
+    sleep 60
+fi

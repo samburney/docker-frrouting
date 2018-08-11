@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv bash
+
+# If config file exists, start daemon
+if [ -f /etc/frr/ripngd.conf ] ; then
+    echo "Starting FRRouting (ripngd)"
+
+    exec \
+        /usr/lib/frr/ripngd
+else
+    # Otherwise sleep for a while...
+    sleep 60
+fi

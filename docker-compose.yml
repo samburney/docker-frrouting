@@ -1,0 +1,14 @@
+version: '2.4'
+
+services:
+  frrouting:
+    build: '.'
+    image: 'samburney/frrouting:latest'
+    restart: 'unless-stopped'
+    cap_add:
+     - NET_ADMIN
+     - NET_BROADCAST
+     - SYS_ADMIN
+    volumes:
+      - '/etc/localtime:/etc/localtime:ro'
+      - './data:/etc/frr'
