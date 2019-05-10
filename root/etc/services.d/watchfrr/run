@@ -1,0 +1,27 @@
+#!/usr/bin/with-contenv bash
+
+echo "Starting FRRouting (watchfrr)"
+
+# Set up /etc/frr/daemons
+read -r -a DAEMON_ARR <<< "$DAEMONS"
+for DAEMON in "${DAEMON_ARR[@]}"
+do
+    touch /etc/frr/$DAEMON.conf
+    chown frr:frr /etc/frr/$DAEMON.conf
+
+    cp /etc/frr/daemons /etc/frr/daemons.temp
+    sed -e "s/$DAEMON=.*/$DAEMON=yes/" /etc/frr/daemons.temp > /etc/frr/daemons
+done
+
+mv /etc/frr/daemons /etc/frr/daemons.temp
+sed -e "s/#watchfrr_options=\"\"/watchfrr_options=\"$DAEMONS\"/" /etc/frr/daemons.temp > /etc/frr/daemons
+chown frr:frr /etc/frr/daemons
+rm /etc/frr/daemons.temp
+
+# Make sure /var/run/frr/ works
+mkdir /var/run/frr/
+chown frr:frr /var/run/frr/
+
+# Run watchfrr
+exec \
+    /usr/lib/frr/watchfrr zebra $DAEMONS

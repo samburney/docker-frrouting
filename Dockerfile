@@ -1,13 +1,15 @@
-FROM lsiobase/alpine:3.9
+FROM lsiobase/ubuntu:bionic
 
 LABEL maintainer 'Sam Burney <sam@burney.io>'
 
-RUN apk add \
-    --update-cache \
-    --repository http://dl-3.alpinelinux.org/alpine/edge/main/ \
-    --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ \
-    --allow-untrusted \
-    frr
+RUN apt update \
+    && apt install -f -y -q gnupg \
+    && curl -s https://deb.frrouting.org/frr/keys.asc | apt-key add - \
+    && echo deb https://deb.frrouting.org/frr bionic frr-stable | tee -a /etc/apt/sources.list.d/frr.list \
+    && apt update \
+    && apt install -f -y -q frr \
+    && apt-get clean \
+    && rm -r /var/lib/apt/lists/*
 
 COPY ./root/ /
 
